@@ -7,7 +7,9 @@
 //
 
 #import "AppDelegate.h"
-
+#import <BmobSDK/Bmob.h>
+#import "XXHomeBarController.h"
+#import "XXLogin.h"
 @interface AppDelegate ()
 
 @end
@@ -16,7 +18,7 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    [self chooseRootViewController];
     return YES;
 }
 
@@ -47,5 +49,18 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+-(void)chooseRootViewController{
+    BmobUser *bUser = [BmobUser currentUser];
+    if (bUser) {
+//        [self performSegueWithIdentifier:@"homebarlogin" sender:self];
+        UIStoryboard *story = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+        XXHomeBarController *home = [story instantiateViewControllerWithIdentifier:@"homebar"];
+        self.window.rootViewController = home;
+    }else{
+        UIStoryboard *story = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+        UINavigationController *login = [story instantiateViewControllerWithIdentifier:@"loginNav"];
+        self.window.rootViewController = login;
+    }
+}
 
 @end
