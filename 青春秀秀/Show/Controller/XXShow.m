@@ -142,7 +142,7 @@
         return;
     }
     BmobQuery *query = [BmobQuery queryWithClassName:@"Show"];
-    [query orderByDescending:@"updatedAt"];
+    [query orderByDescending:@"createdAt"];
     query.limit = 10;
     [query findObjectsInBackgroundWithBlock:^(NSArray *array, NSError *error) {
         if (error) {
@@ -163,6 +163,18 @@
                     model.contentText = [obj objectForKey:@"ShowContent"];
                     model.xxshowmodeltime = [self calTime:obj.createdAt WithNow:now];
                     model.picNamesArray = [obj objectForKey:@"SmallPicArray"];
+//                    model.commentArray =;
+                    NSArray *ComArray  = [obj objectForKey:@"CommentArray"];
+                    NSMutableArray *TemArray = [NSMutableArray array];
+                    for (NSArray *ary in ComArray) {
+                        XXShowCommentItemModel *commentItemModel = [XXShowCommentItemModel new];
+                        commentItemModel.firstUserName = ary[0];
+                        commentItemModel.commentString = ary[1];
+                        commentItemModel.firstUserId = ary[2];
+                        [TemArray addObject:commentItemModel];
+                    }
+                    
+                    model.commentArray = [TemArray copy];
                     
                     BmobQuery *bquery = [BmobQuery queryWithClassName:@"_User"];
                     BmobObject *post = [BmobObject objectWithoutDataWithClassName:@"Show" objectId:obj.objectId];
@@ -204,7 +216,7 @@
     
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
     BmobQuery *query = [BmobQuery queryWithClassName:@"Show"];
-    [query orderByDescending:@"updatedAt"];
+    [query orderByDescending:@"createdAt"];
     query.skip = XXShowModelList.count;
     query.limit = 10;
     [query findObjectsInBackgroundWithBlock:^(NSArray *array, NSError *error) {
@@ -229,7 +241,7 @@
                         NSLog(@"test%@",model.xxshowmodeltime);
                         model.picNamesArray = [obj objectForKey:@"SmallPicArray"];
 //                        model.likeArray = [obj objectForKey:@"likeArray"];
-                        model.commentArray = [obj objectForKey:@"commentArray"];
+//                        model.commentArray = [obj objectForKey:@"commentArray"];
                         [XXShowModelList insertObject:model atIndex:XXShowModelList.count];
                     }
                 });
@@ -356,6 +368,7 @@
     
     CGPoint offset = XXShowtableView.contentOffset;
     offset.y += delta;
+    NSLog(@"contentoffset%f",offset.y);
     if (offset.y < 0) {
         offset.y = 0;
     }
@@ -375,27 +388,68 @@
         [temp addObjectsFromArray:model.commentArray];
         
         XXShowCommentItemModel *commentItemModel = [XXShowCommentItemModel new];
-        commentItemModel.firstUserName = @"lulu";
+        BmobUser *bUser = [BmobUser currentUser];
+        commentItemModel.firstUserName = bUser.username;
         commentItemModel.commentString = textField.text;
-        commentItemModel.firstUserId = @"11111";
+        commentItemModel.firstUserId = bUser.objectId;
         [temp addObject:commentItemModel];
+        
+        [self uploadCommentWithModel:model AndCommentmodel:commentItemModel];
         
         model.commentArray = [temp copy];
         
-        [XXShowtableView reloadRowsAtIndexPaths:@[_currentEditingIndexthPath] withRowAnimation:UITableViewRowAnimationNone];
-        
+
         _textField.text = @"";
-        
         return YES;
     }
     return NO;
 }
 
+-(void)uploadCommentWithModel:(XXShowModel *)model AndCommentmodel:(XXShowCommentItemModel *)commentItemModel{
+    __block NSMutableArray *tempArray = [[NSMutableArray alloc]initWithObjects:
+                          commentItemModel.firstUserName,
+                          commentItemModel.commentString,
+                          commentItemModel.firstUserId,
+                          nil];
+    __block NSMutableArray *oldArray = [NSMutableArray array];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        BmobQuery   *bquery = [BmobQuery queryWithClassName:@"Show"];
+        [bquery getObjectInBackgroundWithId:model.showOjectId block:^(BmobObject *object,NSError *error){
+            if (error){
+                NSLog(@"获取评论表失败----%@",error);
+            }else{
+                if (object) {
+                    if([object objectForKey:@"CommentArray"]){
+                        oldArray = [object objectForKey:@"CommentArray"];
+                    }
+                    [oldArray addObject:tempArray];
+                    [object setObject: oldArray forKey:@"CommentArray"];
+                    [object updateInBackgroundWithResultBlock:^(BOOL isSuccessful, NSError *error) {
+                        if (error) {
+                            NSLog(@"评论失败%@",error);
+                        }else{
+                            NSLog(@"评论成功");
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [XXShowtableView reloadRowsAtIndexPaths:@[_currentEditingIndexthPath] withRowAnimation:UITableViewRowAnimationNone];
+                            });
+                            
+                        }
+                    }];
+                }
+            }
+        }];
+    });
+
+    
+}
 
 
 - (void)keyboardNotification:(NSNotification *)notification{
     NSDictionary *dict = notification.userInfo;
+    
     CGRect rect = [dict[@"UIKeyboardFrameEndUserInfoKey"] CGRectValue];
+    
     CGRect textFieldRect = CGRectMake(0, rect.origin.y - 40, rect.size.width, 40);
     if (rect.origin.y == [UIScreen mainScreen].bounds.size.height) {
         textFieldRect = rect;

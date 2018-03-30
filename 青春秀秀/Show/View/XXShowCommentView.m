@@ -198,6 +198,6 @@
 #pragma mark - MLLinkLabelDelegate
 
 - (void)didClickLink:(MLLink *)link linkText:(NSString *)linkText linkLabel:(MLLinkLabel *)linkLabel {
-    NSLog(@"%@", link.linkValue);
+    NSLog(@"didClickLink%@", link.linkValue);
 }
 @end

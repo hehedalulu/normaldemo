@@ -157,14 +157,16 @@
     if (Stutableview.mj_footer.state == MJRefreshStateRefreshing) {
         return;
     }
-    if (currentIndex == 0) {
-        [StudentModelList removeAllObjects];
-    }else if (currentIndex == 1){
-        [CompanyList removeAllObjects];
-    }else if (currentIndex == 2){
-        [TrainList removeAllObjects];
-    }
+
+    
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        if (currentIndex == 0) {
+            [StudentModelList removeAllObjects];
+        }else if (currentIndex == 1){
+            [CompanyList removeAllObjects];
+        }else if (currentIndex == 2){
+            [TrainList removeAllObjects];
+        }
     BmobQuery *query = [BmobQuery queryWithClassName:@"Demand"];
     [query orderByDescending:@"updatedAt"];
     [query whereKey:@"dType" equalTo:[NSString stringWithFormat:@"%d",(int)currentIndex]];
