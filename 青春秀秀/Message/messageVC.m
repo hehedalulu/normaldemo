@@ -42,6 +42,8 @@ static NSString *newfriendCellID = @"newfriendCellID";
     
 //    UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toMessagesVC)];
 //    [self.newmessageview addGestureRecognizer:tapRecognizer];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadRecentConversations) name:kNewMessageFromer object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadRecentConversations) name:kNewMessagesNotifacation object:nil];
 }
 
 -(void)viewWillAppear:(BOOL)animated{

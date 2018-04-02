@@ -22,17 +22,24 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self initlist];
 }
-
+//
 -(void)initlist{
-    List1 = [[NSMutableArray alloc]init];
-    [List1 addObject:@"手机号"];
-    [List1 addObject:@"性别"];
-    [List1 addObject:@"ID"];
-    
-//    List2 = [[NSMutableArray alloc]init];
-//    [List2 addObject:@"学校"];
+//    List1 = [[NSMutableArray alloc]init];
+//    [List1 addObject:@"手机号"];
+//    [List1 addObject:@"性别"];
+//    [List1 addObject:@"ID"];
+
+    List2 = [[NSMutableArray alloc]init];
+    [List2 addObject:@"我发布的订单"];
+    [List2 addObject:@"我收藏的订单"];
+    [List2 addObject:@"我响应的订单"];
+}
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -41,7 +48,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     
-    return 3;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -50,11 +57,11 @@
             return 1;
             break;
         case 1:
-            return 3;
+            return 4;
             break;
-        case 2:
-            return 2;
-            break;
+//        case 2:
+//            return 2;
+//            break;
     }
     
     return 0;
@@ -63,10 +70,10 @@
 -(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
     NSString *header;
     switch (section) {
+//        case 1:
+//            header = @"个人信息设置";
+//            break;
         case 1:
-            header = @"个人信息设置";
-            break;
-        case 2:
             header = @"我的订单";
             break;
     }
@@ -112,43 +119,35 @@
                                                                          [UIScreen mainScreen].bounds.size.width/10)];
              SelfName.font = [UIFont systemFontOfSize:22];
             if ([bUser objectForKey:@"nick"]) {
-               SelfName.text = [bUser objectForKey:@"nick"];
+               SelfName.text = bUser.username;
             }else{
                 SelfName.text = @"无名氏";
             }
             [cell addSubview:SelfName];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
-        if (indexPath.section==1) {
-            cell.textLabel.text =[List1 objectAtIndex:indexPath.row];
-            cell.textLabel.font = [UIFont systemFontOfSize:15];
+//        if (indexPath.section==1) {
+//            cell.textLabel.text =[List1 objectAtIndex:indexPath.row];
+//            cell.textLabel.font = [UIFont systemFontOfSize:15];
+//            XselfPhoneNumber = [[UILabel alloc]initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width*3/5,
+//                                                                        10, 130, 40)];
+//            if (indexPath.row == 0) {
+//                XselfPhoneNumber.text = bUser.mobilePhoneNumber;
+//            }else if (indexPath.row == 1){
+//                if ([bUser objectForKey:@"Sex"]) {
+//                    XselfPhoneNumber.text = [bUser objectForKey:@"Sex"];
+//                }else{
+//                    XselfPhoneNumber.text = @"未知";
+//                }
+//            }else if(indexPath.row == 2){
+//                XselfPhoneNumber.text = bUser.objectId;
+//            }
+//            [cell addSubview:XselfPhoneNumber];
+//        }
+        if (indexPath.section == 1) {
             XselfPhoneNumber = [[UILabel alloc]initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width*3/5,
                                                                         10, 130, 40)];
-            if (indexPath.row == 0) {
-                XselfPhoneNumber.text = bUser.mobilePhoneNumber;
-            }else if (indexPath.row == 1){
-                if ([bUser objectForKey:@"Sex"]) {
-                    XselfPhoneNumber.text = [bUser objectForKey:@"Sex"];
-                }else{
-                    XselfPhoneNumber.text = @"未知";
-                }
-            }else if(indexPath.row == 2){
-                XselfPhoneNumber.text = bUser.objectId;
-            }
-            [cell addSubview:XselfPhoneNumber];
-        }
-        if (indexPath.section==2) {
-            XselfPhoneNumber = [[UILabel alloc]initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width*3/5,
-                                                                        10, 130, 40)];
-            if (indexPath.row == 0) {
-//                cell.textLabel.text =[List2 objectAtIndex:indexPath.row];
-                cell.textLabel.text = @"我发布的订单";
-                cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-//                cell.textLabel.font = [UIFont systemFontOfSize:15];
-//                XselfPhoneNumber.text = @"北京大学";
-//                [cell addSubview:XselfPhoneNumber];
-            }
-            if (indexPath.row==1) {
+            if (indexPath.row == 3) {
                 UIButton *backregist = [[UIButton alloc]initWithFrame: CGRectMake([UIScreen mainScreen].bounds.size.width/10, 10,
                                                                                   [UIScreen mainScreen].bounds.size.width*8/10, 40)];
                 backregist.backgroundColor = [UIColor orangeColor];
@@ -157,6 +156,9 @@
                 [backregist addTarget:self action:@selector(backtoregist) forControlEvents:UIControlEventTouchUpInside];
                 cell.userInteractionEnabled = YES;
                 [cell addSubview:backregist];
+            }else{
+                cell.textLabel.text = List2[indexPath.row];
+                cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
             }
         }
         
