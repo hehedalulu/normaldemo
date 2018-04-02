@@ -10,6 +10,7 @@
 #import "XXDemandModel.h"
 
 @interface XXDemandDetailVC : UIViewController
+@property (weak, nonatomic) IBOutlet UIScrollView *detailScrollview;
 @property (weak, nonatomic) IBOutlet UIView *XXDemandDetailUserBg;
 @property (weak, nonatomic) IBOutlet UIView *XXDemandDetailBgView;
 @property (weak, nonatomic) IBOutlet UIButton *XXDemandDetailAvatar;

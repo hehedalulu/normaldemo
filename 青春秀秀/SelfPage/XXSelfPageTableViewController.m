@@ -117,6 +117,7 @@
                 SelfName.text = @"无名氏";
             }
             [cell addSubview:SelfName];
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
         if (indexPath.section==1) {
             cell.textLabel.text =[List1 objectAtIndex:indexPath.row];
@@ -184,7 +185,7 @@
     [tableView deselectRowAtIndexPath:indexPath animated:NO];// 取消选中效果
     
     if (indexPath.row==0&&indexPath.section==0) {
-//        [self performSegueWithIdentifier:@"SelfInformation" sender:self];
+        [self performSegueWithIdentifier:@"selfdetail" sender:self];
     }
     if (indexPath.row==0&&indexPath.section==2) {
 //                [self performSegueWithIdentifier:@"SelfInformation" sender:self];

@@ -12,7 +12,7 @@
 
 
 
-@interface XXDemandDetailVC ()
+@interface XXDemandDetailVC ()<UIScrollViewDelegate>
 
 @end
 
@@ -38,6 +38,10 @@
     UITabBarController *tabBarController = [[UITabBarController alloc] initWithNibName:nil bundle:nil];
     int tabBarHeight = tabBarController.tabBar.bounds.size.height;
     
+    CGFloat YCoo = rectStatus.size.height+rectNav.size.height;
+    CGFloat ContentHeight = [UIScreen mainScreen].bounds.size.height - tabBarHeight-YCoo;
+    
+    //粘性头部
     _XXDemandDetailUserBg.frame = CGRectMake(0,
                                             rectStatus.size.height+rectNav.size.height,
                                             [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.width/5);
@@ -76,17 +80,18 @@
         make.size.mas_equalTo(CGSizeMake([UIScreen mainScreen].bounds.size.width, 50));
     }];
     
-    [_XXDemandDetailBgView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(_XXDemandDetailUserBg.mas_bottom).offset(2);
-        make.left.equalTo(self.view);
-        make.bottom.equalTo(_XXDemandDetailClickBtn.mas_top);
-        make.width.equalTo(@([UIScreen mainScreen].bounds.size.width));
-//        make.size.mas_equalTo(CGSizeMake([UIScreen mainScreen].bounds.size.width, 300));
-    }];
+    //内容
+    _detailScrollview.frame = CGRectMake(0,
+                                         YCoo+[UIScreen mainScreen].bounds.size.width/5+2,
+                                         [UIScreen mainScreen].bounds.size.width,
+                                         ContentHeight);
+    
+    _detailScrollview.contentSize = CGSizeMake([UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height*1.2);
+    
     
     _XXDemandDetailTitle.textAlignment = NSTextAlignmentLeft;
     [_XXDemandDetailTitle mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(_XXDemandDetailBgView).offset(10);
+        make.top.equalTo(_detailScrollview).offset(10);
         make.left.equalTo(_XXDemandDetailAvatar);
         make.size.mas_equalTo(CGSizeMake([UIScreen mainScreen].bounds.size.width*4/5, 60));
     }];
@@ -98,6 +103,13 @@
         make.size.mas_equalTo(CGSizeMake([UIScreen mainScreen].bounds.size.width*4/5,  [UIScreen mainScreen].bounds.size.width*3/5));
     }];
     _XXDemandDetailContent.text = _xxDemandDetailModel.xDemandsContent;
+    
+    [_XXDemandDetailBgView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(_detailScrollview);
+        make.left.equalTo(_detailScrollview);
+        make.bottom.equalTo(_XXDemandDetailContent.mas_bottom);
+        make.width.equalTo(@([UIScreen mainScreen].bounds.size.width));
+    }];
     
 
     if ([_xxDemandDetailModel.xDemandState isEqualToString:@"0"]) {

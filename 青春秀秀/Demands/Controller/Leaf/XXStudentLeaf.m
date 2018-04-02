@@ -41,14 +41,15 @@
     currentIndex = index;
     [self initStudentModelList];
     [self initTable];
+    if (StudentModelList !=nil) {
+            [Stutableview.mj_header beginRefreshing];
+        }
+
 }
 
 -(void)zj_viewWillAppearForIndex:(NSInteger)index{
     NSLog(@"viewWillAppear------%ld", index);
     currentIndex = index;
-    if (StudentModelList !=nil) {
-        [Stutableview.mj_header beginRefreshing];
-    }
 }
 
 -(void)zj_viewDidDisappearForIndex:(NSInteger)index{

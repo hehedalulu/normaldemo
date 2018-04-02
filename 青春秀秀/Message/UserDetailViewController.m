@@ -18,7 +18,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *descLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *genderImageView;
 @property (weak, nonatomic) IBOutlet UIButton *addButton;
-@property (weak, nonatomic) IBOutlet UIButton *chatButton;
+//@property (weak, nonatomic) IBOutlet UIButton *chatButton;
 
 @end
 
@@ -66,13 +66,13 @@
     }];
 }
 
-- (IBAction)chat:(id)sender {
-    
-    [[BmobIM sharedBmobIM] saveUserInfo:self.userInfo];
-    
-    [self performSegueWithIdentifier:@"toChatVC" sender:nil];
-    
-}
+//- (IBAction)chat:(id)sender {
+//
+//    [[BmobIM sharedBmobIM] saveUserInfo:self.userInfo];
+//
+//    [self performSegueWithIdentifier:@"toChatVC" sender:nil];
+//
+//}
 
 
 

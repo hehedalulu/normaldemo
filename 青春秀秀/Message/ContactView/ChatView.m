@@ -126,7 +126,8 @@
         make.height.equalTo(@40);
         make.width.equalTo(@40);
     }];
-    self.chatBackgroundImageView.image = [UIImage imageNamed:@"bg_chat_right_nor"];
+    self.chatBackgroundImageView.image = [[UIImage imageNamed:@"bg_chat_right_nor"]stretchableImageWithLeftCapWidth:50 topCapHeight:30];
+//    self.chatBackgroundImageView.backgroundColor = [UIColor greenColor];
 
 }
 
@@ -152,7 +153,7 @@
         make.width.equalTo(@40);
     }];
     
-    self.chatBackgroundImageView.image = [UIImage imageNamed:@"bg_chat_left_nor"] ;
+    self.chatBackgroundImageView.image = [[UIImage imageNamed:@"bg_chat_left_nor"]stretchableImageWithLeftCapWidth:50 topCapHeight:30] ;
 }
 
 

@@ -9,12 +9,12 @@
 #import "XXTree.h"
 #import "XXStudentLeaf.h"
 #import "XXDemandDetailVC.h"
+#import "XXDemandSearchViewController.h"
 
-@interface XXTree ()
-//<XXStudentLeafDelegate>
-{
+@interface XXTree (){
     NSArray *titles;
     UIButton *treeAddBtn;
+    UIButton *searchBtn;
 }
 @property (strong,nonatomic) ZJScrollPageView *demandScrollView;
 
@@ -84,10 +84,22 @@
         [treeAddBtn setBackgroundImage: [UIImage imageNamed:@"add_navbar"] forState:UIControlStateNormal];
         [treeAddBtn addTarget:self action:@selector(jumptoAddVC) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:treeAddBtn];
+        
+        searchBtn = [[UIButton alloc]initWithFrame:CGRectMake(AddX-AddSide*1.4, AddY, AddSide, AddSide)];
+        [searchBtn setBackgroundImage: [UIImage imageNamed:@"search_home"] forState:UIControlStateNormal];
+        [searchBtn addTarget:self action:@selector(jumptoSearchVC) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:searchBtn];
+        
+        
     }
 }
 -(void)jumptoAddVC{
     [self performSegueWithIdentifier:@"xxadddemand" sender:nil];
+}
+
+-(void)jumptoSearchVC{
+    XXDemandSearchViewController *searchvc = [[XXDemandSearchViewController alloc]init];
+    [self.navigationController pushViewController:searchvc animated:YES];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
